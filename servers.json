@@ -1,0 +1,13 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "HandOnLabs-Server",
+            "Group": "HandOnLabs",
+            "Host": "library_db",
+            "Port": 5432,
+            "MaintenanceDB": "LibraryDb",
+            "Username": "postgres",
+            "SSLMode": "prefer"
+        }
+    }
+}

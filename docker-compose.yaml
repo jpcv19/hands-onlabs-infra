@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres:16.3-alpine3.19
+    container_name: library_db
+    hostname: library_db
+    ports:
+      - ${EXTERNAL_DATABASE_PORT}:${INTERNAL_DATABASE_PORT}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB:  ${POSTGRES_DB}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      - library_net
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    restart: unless-stopped
+  pgadmin:
+    image: dpage/pgadmin4:8.8
+    container_name: pgadmin
+    hostname: pgadmin
+    environment:
+        PGADMIN_DEFAULT_EMAIL: '${PGADMIN_DEFAULT_EMAIL}'
+        PGADMIN_DEFAULT_PASSWORD: '${POSTGRES_PASSWORD}'
+    healthcheck:
+      test: "bash -c 'printf \"GET / HTTP/1.1\n\n\" > /dev/tcp/library_db/${INTERNAL_DATABASE_PORT}; exit $?;'"
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    ports:
+        - 5051:80
+    volumes:
+        - ./servers.json:/pgadmin4/servers.json
+    networks:
+        - library_net
+    restart: unless-stopped
+networks:
+  library_net:
+    driver: bridge
+volumes:
+    postgres-db-volume:
+        driver: local
+        driver_opts:
+            type: none
+            o: bind
+            device: C:/contaieners/postgresql/hands-onlabs/data
