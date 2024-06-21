@@ -14,7 +14,7 @@ Este repositorio le proporciona los artefactos necesarios para levantar en su in
 ```powershell
 cd ~\source\repos\
 
-git clone https://crsjce010171vm.daviviendacr.com/TI_SourceCode/Training/_git/hands-onlabs-infra
+git clone https://github.com/jpcv19/hands-onlabs-infra.git
 
 cd hands-onlabs-infra
 ```
